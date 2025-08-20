@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Activity, ActivityTag } from './types';
+import { Activity, ActivityTag, User, UserProfile } from './types';
 
 const KEY = 'activities';
+const USER_KEY = 'user';
 
 export async function loadActivities(): Promise<Activity[]> {
   const raw = await AsyncStorage.getItem(KEY);
@@ -43,4 +44,19 @@ export async function loadWeeklySummary(): Promise<WeeklySummary> {
 
   const changePct = prev === 0 ? 0 : ((total - prev) / prev) * 100;
   return { total, changePct, byTag };
+}
+
+export async function loadUser(): Promise<User> {
+  const raw = await AsyncStorage.getItem(USER_KEY);
+  return raw ? JSON.parse(raw) : {
+    profile: {
+      goal: '',
+      qualification: '',
+      interests: []
+    }
+  };
+}
+
+export async function saveUser(user: User): Promise<void> {
+  await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
 }

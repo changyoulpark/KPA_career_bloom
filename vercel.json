@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cd wecare && npm ci && npm run build",
+  "outputDirectory": "wecare/dist"
+}
