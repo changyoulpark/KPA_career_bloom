@@ -4,7 +4,8 @@
   "private": true,
   "main": "expo",
   "scripts": {
-    "start": "expo start"
+    "start": "expo start",
+    "build": "npx expo export --platform web --output-dir dist"
   },
   "dependencies": {
     "expo": "^51.0.0",

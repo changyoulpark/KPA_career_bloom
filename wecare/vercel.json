@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npx expo export --platform web --output-dir dist",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }
