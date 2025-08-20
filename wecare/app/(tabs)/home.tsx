@@ -2,7 +2,7 @@ import { View, Text, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Activity } from '../../lib/types';
-import { loadActivities } from '../../lib/storage';
+import { loadActivities, saveApplyClick } from '../../lib/storage';
 
 export default function Home() {
   const router = useRouter();
@@ -15,6 +15,7 @@ export default function Home() {
   return (
     <View style={{ flex: 1, padding: 16, gap: 12 }}>
       <Button title="음성 기록" onPress={() => router.push('/record/voice')} />
+      <Button title="지원하기" onPress={saveApplyClick} />
       {activities.map((a) => (
         <View key={a.id} style={{ marginTop: 8 }}>
           <Text>{`${a.tag} ${Math.round(a.durationSec / 60)}분`}</Text>
