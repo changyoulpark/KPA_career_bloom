@@ -1,0 +1,52 @@
+[
+  {
+    "id": "job1",
+    "title": "프론트엔드 개발자",
+    "company": "테크코",
+    "region": "서울",
+    "jobType": "개발",
+    "deadline": "2024-06-25",
+    "score": 95,
+    "tags": ["코딩"]
+  },
+  {
+    "id": "job2",
+    "title": "마케팅 인턴",
+    "company": "마켓리드",
+    "region": "부산",
+    "jobType": "마케팅",
+    "deadline": "2024-06-20",
+    "score": 88,
+    "tags": ["네트워킹"]
+  },
+  {
+    "id": "job3",
+    "title": "데이터 분석가",
+    "company": "데이터랩",
+    "region": "서울",
+    "jobType": "데이터",
+    "deadline": "2024-07-05",
+    "score": 91,
+    "tags": ["코딩"]
+  },
+  {
+    "id": "job4",
+    "title": "콘텐츠 에디터",
+    "company": "미디어웍스",
+    "region": "대구",
+    "jobType": "콘텐츠",
+    "deadline": "2024-06-18",
+    "score": 84,
+    "tags": ["신문스크랩", "영단어"]
+  },
+  {
+    "id": "job5",
+    "title": "HR 매니저",
+    "company": "인사솔루션",
+    "region": "부산",
+    "jobType": "인사",
+    "deadline": "2024-07-10",
+    "score": 80,
+    "tags": ["네트워킹"]
+  }
+]
