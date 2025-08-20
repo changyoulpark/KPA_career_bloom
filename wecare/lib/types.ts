@@ -18,13 +18,20 @@ export interface Activity {
   keywords: string[];
 }
 
-export interface Job {
-  id: string;
-  title: string;
-  company: string;
-  region: string;
-  jobType: string;
-  deadline: string; // ISO
-  score: number;
-  tags: ActivityTag[];
+export interface UserSettings {
+  notifications: {
+    enabled: boolean;
+    time: string; // HH:MM
+  };
+}
+
+export interface UserProfile {
+  goal: string;
+  qualification: string;
+  interest: string;
+}
+
+export interface User {
+  profile: UserProfile;
+  settings: UserSettings;
 }
