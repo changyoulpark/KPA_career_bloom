@@ -15,6 +15,7 @@
     "@expo/vector-icons": "^14.0.3",
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-voice/voice": "^3.2.0",
+    "@types/react": "^19.1.10",
     "expo": "^51.0.0",
     "expo-analytics-amplitude": "~11.3.0",
     "expo-notifications": "~0.28.19",
@@ -26,6 +27,7 @@
     "react-native-svg": "15.2.0",
     "react-native-web": "~0.19.10",
     "serve": "^14.2.4",
+    "typescript": "^5.9.2",
     "victory-native": "^36.6.7"
   }
 }
