@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { useState } from 'react';
 import VoiceMic from '../../components/VoiceMic';
-import { summarizeAndTag } from '../../lib/gemini';
+import { parseActivities } from '../../lib/nlp';
 import { saveActivity } from '../../lib/storage';
 import { Activity } from '../../lib/types';
 
@@ -12,15 +12,18 @@ export default function VoiceScreen() {
   const handleStop = async (text: string) => {
     setTranscript(text);
     try {
-      const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
-      const result = await summarizeAndTag(text, apiKey);
-      const full: Activity = {
-        id: Date.now().toString(),
-        date: new Date().toISOString(),
-        ...result,
-      };
-      await saveActivity(full);
-      setActivity(full);
+      const acts = parseActivities(text);
+      const saved: Activity[] = [];
+      for (const a of acts) {
+        const full: Activity = {
+          id: Date.now().toString(),
+          date: new Date().toISOString(),
+          ...a,
+        };
+        await saveActivity(full);
+        saved.push(full);
+      }
+      setActivity(saved[0] ?? null);
     } catch (e) {
       console.warn(e);
     }

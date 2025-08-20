@@ -1,4 +1,4 @@
-import { Activity, ActivityTag } from './types';
+import type { Activity, ActivityTag } from './types.ts';
 
 const stopWords: Set<string> = new Set([
   '오늘',
