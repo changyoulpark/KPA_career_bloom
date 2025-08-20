@@ -5,6 +5,7 @@ import { summarizeAndTag } from '../../lib/gemini';
 import { parseActivities } from '../../lib/nlp';
 import { saveActivity } from '../../lib/storage';
 import { Activity } from '../../lib/types';
+import { parseActivities } from '../../lib/nlp';
 
 export default function VoiceScreen() {
   const [transcript, setTranscript] = useState('');
