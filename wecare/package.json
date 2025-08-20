@@ -14,6 +14,12 @@
     "@react-native-async-storage/async-storage": "^1.21.0",
     "react": "18.2.0",
     "react-native": "0.73.4",
-    "victory-native": "^36.6.7"
+    "victory-native": "^36.6.7",
+    "react-native-web": "~0.19.10",
+    "react-dom": "18.2.0",
+    "react-native-svg": "15.2.0",
+    "expo-notifications": "~0.28.19",
+    "expo-analytics-amplitude": "~11.3.0",
+    "@expo/vector-icons": "^14.0.3"
   }
 }
