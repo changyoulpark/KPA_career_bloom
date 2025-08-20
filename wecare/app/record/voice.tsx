@@ -2,8 +2,10 @@ import { View, Text } from 'react-native';
 import { useState } from 'react';
 import VoiceMic from '../../components/VoiceMic';
 import { summarizeAndTag } from '../../lib/gemini';
+import { parseActivities } from '../../lib/nlp';
 import { saveActivity } from '../../lib/storage';
 import { Activity } from '../../lib/types';
+import { parseActivities } from '../../lib/nlp';
 
 export default function VoiceScreen() {
   const [transcript, setTranscript] = useState('');
@@ -11,6 +13,21 @@ export default function VoiceScreen() {
 
   const handleStop = async (text: string) => {
     setTranscript(text);
+    try {
+      const parsed = parseActivities(text);
+      if (parsed.length > 0) {
+        const full: Activity = {
+          id: Date.now().toString(),
+          date: new Date().toISOString(),
+          ...parsed[0],
+        };
+        await saveActivity(full);
+        setActivity(full);
+        return;
+      }
+    } catch (err) {
+      console.warn('parseActivities error', err);
+    }
     try {
       const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
       const result = await summarizeAndTag(text, apiKey);
