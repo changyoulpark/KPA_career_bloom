@@ -1,8 +1,34 @@
-import type { Activity, ActivityTag } from './types.ts';
+import { Activity, ActivityTag } from './types';
 
-const stopWords = new Set<string>([
-  '오늘', '오전', '저녁', '오후', '그리고', '또', '또는', '에서', '에', '를', '을', '가', '이',
-  '저', '나', '너', '한', '하나', '무슨', '몇', '개', '문항', '1개', '1', '2', '3', '4', '5'
+const stopWords: Set<string> = new Set([
+  '오늘',
+  '오전',
+  '저녁',
+  '오후',
+  '그리고',
+  '또',
+  '또는',
+  '에서',
+  '에',
+  '를',
+  '을',
+  '가',
+  '이',
+  '저',
+  '나',
+  '너',
+  '한',
+  '하나',
+  '무슨',
+  '몇',
+  '개',
+  '문항',
+  '1개',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
 ]);
 
 const tagRules: Record<ActivityTag, string[]> = {
@@ -13,7 +39,7 @@ const tagRules: Record<ActivityTag, string[]> = {
   코딩: ['코딩', '프로그래밍', '코드'],
   네트워킹: ['네트워킹', '모임', '만남'],
   자격증: ['자격증', '시험'],
-  기타: []
+  기타: [],
 };
 
 export function normalize(text: string): string {
@@ -51,7 +77,7 @@ export function topTerms(text: string, n = 3): string[] {
     .replace(/[^가-힣0-9\s]/g, ' ')
     .split(/\s+/)
     .filter((t) => t && !stopWords.has(t));
-  const freq = new Map<string, number>();
+  const freq: Map<string, number> = new Map();
   for (const t of tokens) {
     freq.set(t, (freq.get(t) || 0) + 1);
   }
@@ -77,8 +103,7 @@ export function parseActivities(transcript: string): Omit<Activity, 'id' | 'date
     const durationSec = extractDuration(norm);
     const tag = matchCategory(norm);
     const keywords = topTerms(norm);
-    const base = seg.trim();
-    activities.push({ durationSec, tag, note: base, transcript: base, keywords });
+    activities.push({ durationSec, tag, note: seg.trim(), transcript: seg.trim(), keywords });
   }
   return activities;
 }
