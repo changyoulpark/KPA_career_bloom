@@ -1,8 +1,10 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Activity } from '../../lib/types';
 import { loadActivities } from '../../lib/storage';
+import Card from '../../components/Card';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Home() {
   const router = useRouter();
@@ -14,7 +16,21 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Button title="음성 기록" onPress={() => router.push('/record/voice')} />
+      <Card
+        text="Reflect"
+        icon={<Ionicons name="create-outline" size={24} color="black" />}
+        onPress={() => router.push('/reflect')}
+      />
+      <Card
+        text="Voice"
+        icon={<Ionicons name="mic-outline" size={24} color="black" />}
+        onPress={() => router.push('/voice')}
+      />
+      <Card
+        text="Check"
+        icon={<Ionicons name="checkmark-outline" size={24} color="black" />}
+        onPress={() => router.push('/check')}
+      />
       {activities.map((a) => (
         <View key={a.id} style={{ marginTop: 8 }}>
           <Text>{`${a.tag} ${Math.round(a.durationSec / 60)}분`}</Text>
