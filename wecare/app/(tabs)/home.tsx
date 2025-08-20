@@ -2,8 +2,10 @@ import { View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Activity } from '../../lib/types';
+
 import { loadActivities } from '../../lib/storage';
 import Card from '../../components/Card';
+
 
 export default function Home() {
   const router = useRouter();

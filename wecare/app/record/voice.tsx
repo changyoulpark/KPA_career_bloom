@@ -4,6 +4,7 @@ import VoiceMic from '../../components/VoiceMic';
 import { summarizeAndTag } from '../../lib/gemini';
 import { saveActivity } from '../../lib/storage';
 import { Activity } from '../../lib/types';
+import { parseActivities } from '../../lib/nlp';
 
 export default function VoiceScreen() {
   const [transcript, setTranscript] = useState('');
@@ -12,8 +13,14 @@ export default function VoiceScreen() {
   const handleStop = async (text: string) => {
     setTranscript(text);
     try {
-      const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
-      const result = await summarizeAndTag(text, apiKey);
+      let result: Omit<Activity, 'id' | 'date'> | null = null;
+      const parsed = parseActivities(text)[0];
+      if (parsed) {
+        result = parsed;
+      } else {
+        const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
+        result = await summarizeAndTag(text, apiKey);
+      }
       const full: Activity = {
         id: Date.now().toString(),
         date: new Date().toISOString(),
