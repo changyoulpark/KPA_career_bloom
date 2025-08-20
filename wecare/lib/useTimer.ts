@@ -55,3 +55,4 @@ export function useTimer(options: Options = {}) {
 }
 
 export default useTimer;
+

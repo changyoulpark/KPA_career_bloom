@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import useTimer from '../../lib/useTimer';
@@ -53,3 +54,4 @@ export default function TimerScreen() {
     </View>
   );
 }
+
