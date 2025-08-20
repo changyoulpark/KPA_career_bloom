@@ -17,21 +17,3 @@ export interface Activity {
   transcript?: string;
   keywords: string[];
 }
-
-export interface UserSettings {
-  notifications: {
-    enabled: boolean;
-    time: string; // HH:MM
-  };
-}
-
-export interface UserProfile {
-  goal: string;
-  qualification: string;
-  interest: string;
-}
-
-export interface User {
-  profile: UserProfile;
-  settings: UserSettings;
-}
