@@ -1,0 +1,18 @@
+{
+  "name": "wecare",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo",
+  "scripts": {
+    "start": "expo start"
+  },
+  "dependencies": {
+    "expo": "^51.0.0",
+    "expo-router": "^3.0.0",
+    "expo-speech": "~12.0.0",
+    "@react-native-voice/voice": "^3.2.0",
+    "@react-native-async-storage/async-storage": "^1.21.0",
+    "react": "18.2.0",
+    "react-native": "0.73.4"
+  }
+}
