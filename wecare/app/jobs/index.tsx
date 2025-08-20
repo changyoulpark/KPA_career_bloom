@@ -1,92 +1,66 @@
-import { useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { View, FlatList } from 'react-native';
 import Chip from '../../components/Chip';
+import JobCell, { Job } from '../../components/JobCell';
+import { loadActivities } from '../../lib/storage';
+import { Activity } from '../../lib/types';
 import jobsData from '../../assets/jobs.json';
 
-interface Job {
-  id: string;
-  title: string;
-  location: string;
-  jobType: string;
-  closingDate: string; // ISO string
-  activityMatch: boolean;
-  recommendationScore: number;
-}
+export default function Jobs() {
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [region, setRegion] = useState<string | null>(null);
+  const [jobType, setJobType] = useState<string | null>(null);
+  const [soon, setSoon] = useState(false);
+  const [match, setMatch] = useState(false);
 
-function daysUntil(date: string) {
-  const diff = new Date(date).getTime() - Date.now();
-  return diff / (1000 * 60 * 60 * 24);
-}
-
-export default function JobsScreen() {
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-  const [selectedJobType, setSelectedJobType] = useState<string | null>(null);
-  const [onlyClosingSoon, setOnlyClosingSoon] = useState(false);
-  const [onlyActivityMatch, setOnlyActivityMatch] = useState(false);
+  useEffect(() => {
+    loadActivities().then(setActivities);
+  }, []);
 
   const jobs: Job[] = jobsData as Job[];
-  const locations = Array.from(new Set(jobs.map((j) => j.location)));
-  const jobTypes = Array.from(new Set(jobs.map((j) => j.jobType)));
+
+  const regions = useMemo(() => Array.from(new Set(jobs.map((j) => j.region))), [jobs]);
+  const jobTypes = useMemo(() => Array.from(new Set(jobs.map((j) => j.jobType))), [jobs]);
+
+  const now = new Date();
 
   const filtered = jobs
-    .filter((j) => !selectedLocation || j.location === selectedLocation)
-    .filter((j) => !selectedJobType || j.jobType === selectedJobType)
-    .filter((j) => !onlyClosingSoon || daysUntil(j.closingDate) <= 7)
-    .filter((j) => !onlyActivityMatch || j.activityMatch)
-    .sort((a, b) => b.recommendationScore - a.recommendationScore);
+    .filter((j) => !region || j.region === region)
+    .filter((j) => !jobType || j.jobType === jobType)
+    .filter(
+      (j) =>
+        !soon ||
+        (new Date(j.deadline).getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 7
+    )
+    .filter((j) => !match || j.tags.some((t) => activities.some((a) => a.tag === t)))
+    .sort((a, b) => b.score - a.score);
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 16 }}>
-        {locations.map((loc) => (
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 }}>
+        {regions.map((r) => (
           <Chip
-            key={loc}
-            label={loc}
-            selected={selectedLocation === loc}
-            onPress={() =>
-              setSelectedLocation(selectedLocation === loc ? null : loc)
-            }
+            key={r}
+            label={r}
+            selected={region === r}
+            onPress={() => setRegion(region === r ? null : r)}
           />
         ))}
-        {jobTypes.map((type) => (
+        {jobTypes.map((jt) => (
           <Chip
-            key={type}
-            label={type}
-            selected={selectedJobType === type}
-            onPress={() =>
-              setSelectedJobType(selectedJobType === type ? null : type)
-            }
+            key={jt}
+            label={jt}
+            selected={jobType === jt}
+            onPress={() => setJobType(jobType === jt ? null : jt)}
           />
         ))}
-        <Chip
-          label="마감 임박"
-          selected={onlyClosingSoon}
-          onPress={() => setOnlyClosingSoon(!onlyClosingSoon)}
-        />
-        <Chip
-          label="활동 일치"
-          selected={onlyActivityMatch}
-          onPress={() => setOnlyActivityMatch(!onlyActivityMatch)}
-        />
+        <Chip label="마감 임박" selected={soon} onPress={() => setSoon(!soon)} />
+        <Chip label="활동 일치" selected={match} onPress={() => setMatch(!match)} />
       </View>
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              padding: 12,
-              borderBottomWidth: 1,
-              borderColor: '#eee',
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.title}</Text>
-            <Text>
-              {item.location} · {item.jobType}
-            </Text>
-            <Text>마감일: {item.closingDate}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => <JobCell job={item} />}
       />
     </View>
   );

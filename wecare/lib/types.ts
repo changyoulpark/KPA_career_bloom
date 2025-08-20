@@ -17,3 +17,14 @@ export interface Activity {
   transcript?: string;
   keywords: string[];
 }
+
+export interface Job {
+  id: string;
+  title: string;
+  company: string;
+  region: string;
+  jobType: string;
+  deadline: string; // ISO
+  score: number;
+  tags: ActivityTag[];
+}
