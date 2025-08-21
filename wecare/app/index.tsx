@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
+import { View, Text, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function Index() {
   const router = useRouter();
-
-  useEffect(() => {
-    // Redirect to onboarding as the entry point
-    router.replace('/onboarding');
-  }, []);
-
-  return null;
+  
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 }}>
+      <Text>온보딩을 시작합니다</Text>
+      <Button title="시작하기" onPress={() => router.push('/onboarding/goal')} />
+    </View>
+  );
 }
