@@ -17,3 +17,14 @@ export interface Activity {
   transcript?: string;
   keywords: string[];
 }
+
+export interface Profile {
+  goal: string;
+  qualification: string;
+  interest: string;
+}
+
+export interface User {
+  id: string;
+  profile: Profile;
+}
