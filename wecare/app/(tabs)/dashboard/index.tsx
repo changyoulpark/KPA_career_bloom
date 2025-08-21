@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import Svg from 'react-native-svg';
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryLine } from 'victory-native';
-import StatRow from '../../components/StatRow';
+import StatRow from '../../../components/StatRow';
 import { 
   loadWeeklySummary, 
   WeeklySummary, 
   loadActivities,
   loadMotivationMessages,
   saveMotivationMessages
-} from '../../lib/storage';
-import { generateMotivationMessage } from '../../lib/motivation';
-import { MotivationMessage } from '../../lib/types';
+} from '../../../lib/storage';
+import { generateMotivationMessage } from '../../../lib/motivation';
+import { MotivationMessage } from '../../../lib/types';
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<WeeklySummary | null>(null);

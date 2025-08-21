@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { View, FlatList, Text, ScrollView, TouchableOpacity } from 'react-native';
-import Chip from '../../components/Chip';
-import JobCell, { Job } from '../../components/JobCell';
-import { loadActivities, loadUser } from '../../lib/storage';
-import { Activity, Profile } from '../../lib/types';
+import Chip from '../../../components/Chip';
+import JobCell, { Job } from '../../../components/JobCell';
+import { loadActivities, loadUser } from '../../../lib/storage';
+import { Activity, Profile } from '../../../lib/types';
 import { 
   generatePersonalizedRecommendations, 
   generateRecommendationMessage,
   getStrengthLevelMessage,
   RecommendationScore 
-} from '../../lib/recommendations';
-import jobsData from '../../assets/jobs.json';
+} from '../../../lib/recommendations';
+import jobsData from '../../../assets/jobs.json';
 
 export default function Jobs() {
   const [activities, setActivities] = useState<Activity[]>([]);

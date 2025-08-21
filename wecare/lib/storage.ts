@@ -1,8 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Activity, ActivityTag, User } from './types';
+import { Activity, ActivityTag, User, MotivationMessage, MicroMission } from './types';
 
 const KEY = 'activities';
 const USER_KEY = 'user';
+const MESSAGES_KEY = 'motivation_messages';
+const MISSIONS_KEY = 'micro_missions';
 
 export async function loadActivities(): Promise<Activity[]> {
   const raw = await AsyncStorage.getItem(KEY);
@@ -60,4 +62,42 @@ export async function loadWeeklySummary(): Promise<WeeklySummary> {
 
   const changePct = prev === 0 ? 0 : ((total - prev) / prev) * 100;
   return { total, changePct, byTag };
+}
+
+// Motivation Messages
+export async function loadMotivationMessages(): Promise<MotivationMessage[]> {
+  const raw = await AsyncStorage.getItem(MESSAGES_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+export async function saveMotivationMessage(message: MotivationMessage): Promise<void> {
+  const messages = await loadMotivationMessages();
+  messages.push(message);
+  // Keep only last 50 messages
+  const recent = messages.slice(-50);
+  await AsyncStorage.setItem(MESSAGES_KEY, JSON.stringify(recent));
+}
+
+export async function saveMotivationMessages(messages: MotivationMessage[]): Promise<void> {
+  await AsyncStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
+}
+
+// Micro Missions
+export async function loadMicroMissions(): Promise<MicroMission[]> {
+  const raw = await AsyncStorage.getItem(MISSIONS_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+export async function saveMicroMissions(missions: MicroMission[]): Promise<void> {
+  await AsyncStorage.setItem(MISSIONS_KEY, JSON.stringify(missions));
+}
+
+export async function completeMission(missionId: string): Promise<void> {
+  const missions = await loadMicroMissions();
+  const mission = missions.find(m => m.id === missionId);
+  if (mission) {
+    mission.completed = true;
+    mission.dateCompleted = new Date().toISOString();
+    await saveMicroMissions(missions);
+  }
 }
