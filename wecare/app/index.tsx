@@ -1,13 +1,25 @@
-import { View, Text, Button } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function Index() {
-  const router = useRouter();
-  
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 }}>
       <Text>온보딩을 시작합니다</Text>
-      <Button title="시작하기" onPress={() => router.push('/onboarding/goal')} />
+      <Link 
+        href="/onboarding/goal"
+        style={{
+          backgroundColor: '#007AFF',
+          paddingHorizontal: 20,
+          paddingVertical: 10,
+          borderRadius: 5,
+          textAlign: 'center',
+          color: 'white',
+          fontWeight: 'bold',
+          textDecorationLine: 'none',
+        }}
+      >
+        시작하기
+      </Link>
     </View>
   );
 }
