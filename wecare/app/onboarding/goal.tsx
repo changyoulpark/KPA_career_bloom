@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
-import { SafeNavigationButton } from '../../components/SafeNavigation';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function GoalScreen() {
   const [goal, setGoal] = useState('');
   const [isValid, setIsValid] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Simple validation - goal should be at least 3 characters
     setIsValid(goal.trim().length >= 3);
   }, [goal]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isValid) {
       Alert.alert(
         '입력 확인',
@@ -19,6 +20,18 @@ export default function GoalScreen() {
         [{ text: '확인', style: 'default' }]
       );
       return;
+    }
+
+    try {
+      // Navigate to the next screen
+      router.push('/onboarding/qualification');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      Alert.alert(
+        '네비게이션 오류',
+        '다음 페이지로 이동할 수 없습니다. 다시 시도해 주세요.',
+        [{ text: '확인', style: 'default' }]
+      );
     }
   };
 
@@ -44,16 +57,13 @@ export default function GoalScreen() {
           <Text style={styles.validationText}>목표를 3자 이상 입력해 주세요</Text>
         )}
         
-        <SafeNavigationButton
-          href="/onboarding/qualification"
+        <TouchableOpacity
           style={[styles.nextButton, !isValid && styles.disabledButton]}
-          textStyle={styles.nextButtonText}
-          onPressStart={handleNext}
-          fallbackHref="/onboarding/goal"
+          onPress={handleNext}
           disabled={!isValid}
         >
           <Text style={styles.nextButtonText}>다음</Text>
-        </SafeNavigationButton>
+        </TouchableOpacity>
         
         <Text style={styles.stepIndicator}>1/3 단계</Text>
       </View>

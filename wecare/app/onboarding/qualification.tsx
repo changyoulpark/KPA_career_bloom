@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
-import { SafeNavigationButton } from '../../components/SafeNavigation';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { loadUser, saveUser } from '../../lib/storage';
 
 export default function QualificationScreen() {
   const [qualification, setQualification] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const initializeScreen = async () => {
@@ -47,6 +48,9 @@ export default function QualificationScreen() {
       const user = await loadUser();
       user.profile.qualification = qualification;
       await saveUser(user);
+      
+      // Navigate to next screen
+      router.push('/onboarding/interest');
     } catch (error) {
       console.error('Failed to save user data:', error);
       Alert.alert(
@@ -54,7 +58,6 @@ export default function QualificationScreen() {
         '정보 저장에 실패했습니다. 다시 시도해 주세요.',
         [{ text: '확인', style: 'default' }]
       );
-      throw error; // Prevent navigation if save fails
     }
   };
 
@@ -88,16 +91,13 @@ export default function QualificationScreen() {
           <Text style={styles.validationText}>자격사항을 2자 이상 입력해 주세요</Text>
         )}
         
-        <SafeNavigationButton
-          href="/onboarding/interest"
+        <TouchableOpacity
           style={[styles.nextButton, !isValid && styles.disabledButton]}
-          textStyle={styles.nextButtonText}
-          onPressStart={handleNext}
-          fallbackHref="/onboarding/qualification"
+          onPress={handleNext}
           disabled={!isValid}
         >
           <Text style={styles.nextButtonText}>다음</Text>
-        </SafeNavigationButton>
+        </TouchableOpacity>
         
         <Text style={styles.stepIndicator}>2/3 단계</Text>
       </View>

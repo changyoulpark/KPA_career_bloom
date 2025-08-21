@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
-import { SafeNavigationButton } from '../../components/SafeNavigation';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { loadUser, saveUser } from '../../lib/storage';
 
 export default function InterestScreen() {
   const [interest, setInterest] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isValid, setIsValid] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const initializeScreen = async () => {
@@ -52,7 +53,19 @@ export default function InterestScreen() {
       Alert.alert(
         '온보딩 완료!',
         '프로필 설정이 완료되었습니다. 이제 앱을 사용할 준비가 되었어요!',
-        [{ text: '시작하기', style: 'default' }]
+        [{ 
+          text: '시작하기', 
+          style: 'default',
+          onPress: () => {
+            try {
+              router.replace('/(tabs)/home');
+            } catch (error) {
+              console.error('Navigation error:', error);
+              // Fallback navigation
+              router.replace('/');
+            }
+          }
+        }]
       );
     } catch (error) {
       console.error('Failed to save user data:', error);
@@ -61,7 +74,6 @@ export default function InterestScreen() {
         '정보 저장에 실패했습니다. 다시 시도해 주세요.',
         [{ text: '확인', style: 'default' }]
       );
-      throw error; // Prevent navigation if save fails
     }
   };
 
@@ -95,16 +107,13 @@ export default function InterestScreen() {
           <Text style={styles.validationText}>관심 직무를 2자 이상 입력해 주세요</Text>
         )}
         
-        <SafeNavigationButton
-          href="/(tabs)/home"
+        <TouchableOpacity
           style={[styles.completeButton, !isValid && styles.disabledButton]}
-          textStyle={styles.completeButtonText}
-          onPressStart={handleComplete}
-          fallbackHref="/"
+          onPress={handleComplete}
           disabled={!isValid}
         >
           <Text style={styles.completeButtonText}>완료</Text>
-        </SafeNavigationButton>
+        </TouchableOpacity>
         
         <Text style={styles.stepIndicator}>3/3 단계</Text>
         

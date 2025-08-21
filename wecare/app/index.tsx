@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { SafeNavigationButton } from '../components/SafeNavigation';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Simulate app initialization check
@@ -28,7 +29,7 @@ export default function Index() {
     initializeApp();
   }, []);
 
-  const handleStartPress = () => {
+  const handleStartPress = async () => {
     if (hasError) {
       Alert.alert(
         '오류 발생',
@@ -48,6 +49,17 @@ export default function Index() {
       );
       return;
     }
+
+    try {
+      router.push('/onboarding/goal');
+    } catch (error) {
+      console.error('Navigation error:', error);
+      Alert.alert(
+        '네비게이션 오류',
+        '온보딩 페이지로 이동할 수 없습니다. 다시 시도해 주세요.',
+        [{ text: '확인', style: 'default' }]
+      );
+    }
   };
 
   if (isLoading) {
@@ -66,17 +78,13 @@ export default function Index() {
         취업 준비를 위한 여정을 시작해보세요
       </Text>
       
-      <SafeNavigationButton
-        href="/onboarding/goal"
-        style={styles.startButton}
-        textStyle={styles.startButtonText}
-        onPressStart={() => console.log('Starting onboarding...')}
-        onPressEnd={() => console.log('Navigation completed')}
-        fallbackHref="/"
+      <TouchableOpacity
+        style={[styles.startButton, hasError && styles.errorButton]}
+        onPress={handleStartPress}
         disabled={hasError}
       >
         <Text style={styles.startButtonText}>시작하기</Text>
-      </SafeNavigationButton>
+      </TouchableOpacity>
 
       {hasError && (
         <View style={styles.errorContainer}>
@@ -127,6 +135,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  errorButton: {
+    backgroundColor: '#ccc',
+    opacity: 0.6,
   },
   startButtonText: {
     color: 'white',

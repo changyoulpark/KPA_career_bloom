@@ -114,10 +114,14 @@ export function SafeNavigationButton({
 
     try {
       setIsNavigating(true);
-      onPressStart?.();
+      
+      // Call onPressStart - this might contain validation logic
+      if (onPressStart) {
+        await onPressStart();
+      }
       
       // Add a small delay to show loading state
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       
       // Validate route exists (basic check)
       if (!href || href.trim() === '') {
