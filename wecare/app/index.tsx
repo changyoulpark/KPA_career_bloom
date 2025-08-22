@@ -1,9 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import { loadUser } from '../lib/storage';
 
 export default function Index() {
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleStartPress = async () => {
+    if (isLoading) return;
+
+    try {
+      setIsLoading(true);
+
+      // Add a small delay for user feedback
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Test data loading
+      await loadUser();
+      
+      console.log('Navigating to onboarding/goal');
+      router.push('/onboarding/goal');
+
+    } catch (error) {
+      console.error('Start button error:', error);
+      setHasError(true);
+      
+      Alert.alert(
+        '시작 오류',
+        '앱을 시작하는데 문제가 발생했습니다. 다시 시도해 주세요.',
+        [
+          { text: '다시 시도', onPress: () => {
+            setHasError(false);
+            setIsLoading(false);
+          }},
+          { text: '취소', style: 'cancel', onPress: () => setIsLoading(false) }
+        ]
+      );
+    } finally {
+      if (!hasError) {
+        // Keep loading state briefly to show transition
+        setTimeout(() => setIsLoading(false), 200);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -12,19 +53,29 @@ export default function Index() {
         취업 준비를 위한 여정을 시작해보세요
       </Text>
       
-      <Link href="/onboarding/goal" asChild>
-        <TouchableOpacity
-          style={[styles.startButton, hasError && styles.errorButton]}
-          disabled={hasError}
-        >
+      <TouchableOpacity
+        style={[
+          styles.startButton, 
+          hasError && styles.errorButton,
+          isLoading && styles.loadingButton
+        ]}
+        onPress={handleStartPress}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="white" />
+            <Text style={styles.startButtonText}>로딩 중...</Text>
+          </View>
+        ) : (
           <Text style={styles.startButtonText}>시작하기</Text>
-        </TouchableOpacity>
-      </Link>
+        )}
+      </TouchableOpacity>
 
       {hasError && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
-            ⚠️ 일부 기능이 제대로 작동하지 않을 수 있습니다
+            ⚠️ 문제가 발생했습니다. 다시 시도해 주세요.
           </Text>
         </View>
       )}
@@ -62,23 +113,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     minWidth: 120,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 3,
   },
   errorButton: {
     backgroundColor: '#ccc',
     opacity: 0.6,
   },
+  loadingButton: {
+    backgroundColor: '#28a745',
+  },
   startButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   errorContainer: {
     backgroundColor: '#ffebee',

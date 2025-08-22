@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { loadUser, saveUser } from '../../lib/storage';
 
 export default function GoalScreen() {
   const [goal, setGoal] = useState('');
@@ -23,13 +24,18 @@ export default function GoalScreen() {
     }
 
     try {
+      // Save the goal to storage first
+      const user = await loadUser();
+      user.profile.goal = goal.trim();
+      await saveUser(user);
+
       // Navigate to the next screen
       router.push('/onboarding/qualification');
     } catch (error) {
-      console.error('Navigation error:', error);
+      console.error('Navigation/Save error:', error);
       Alert.alert(
-        '네비게이션 오류',
-        '다음 페이지로 이동할 수 없습니다. 다시 시도해 주세요.',
+        '오류 발생',
+        '목표를 저장하거나 다음 페이지로 이동하는데 문제가 발생했습니다.\n\n다시 시도해 주세요.',
         [{ text: '확인', style: 'default' }]
       );
     }
