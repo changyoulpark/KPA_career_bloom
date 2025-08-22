@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { loadUser } from '../lib/storage';
 
 export default function Index() {
-  const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const router = useRouter();
 
   const handleStartPress = async () => {
@@ -13,37 +13,31 @@ export default function Index() {
 
     try {
       setIsLoading(true);
-
-      // Add a small delay for user feedback
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Test data loading
-      await loadUser();
       
+      // Show loading state immediately
+      console.log('Start button pressed - loading...');
+
+      // Add delay for visual feedback  
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Test storage and load user data
+      const user = await loadUser();
+      console.log('User data loaded successfully:', user);
+      
+      // Navigate to onboarding
       console.log('Navigating to onboarding/goal');
       router.push('/onboarding/goal');
 
     } catch (error) {
-      console.error('Start button error:', error);
+      console.error('Navigation error:', error);
       setHasError(true);
-      
-      Alert.alert(
-        '시작 오류',
-        '앱을 시작하는데 문제가 발생했습니다. 다시 시도해 주세요.',
-        [
-          { text: '다시 시도', onPress: () => {
-            setHasError(false);
-            setIsLoading(false);
-          }},
-          { text: '취소', style: 'cancel', onPress: () => setIsLoading(false) }
-        ]
-      );
-    } finally {
-      if (!hasError) {
-        // Keep loading state briefly to show transition
-        setTimeout(() => setIsLoading(false), 200);
-      }
+      setIsLoading(false);
     }
+  };
+
+  const handleRetry = () => {
+    setHasError(false);
+    setIsLoading(false);
   };
 
   return (
@@ -56,11 +50,13 @@ export default function Index() {
       <TouchableOpacity
         style={[
           styles.startButton, 
-          hasError && styles.errorButton,
-          isLoading && styles.loadingButton
+          isLoading && styles.loadingButton,
+          hasError && styles.errorButton
         ]}
         onPress={handleStartPress}
-        disabled={isLoading}
+        disabled={isLoading || hasError}
+        accessible={true}
+        accessibilityLabel="온보딩 시작하기 버튼"
       >
         {isLoading ? (
           <View style={styles.loadingContainer}>
@@ -75,7 +71,18 @@ export default function Index() {
       {hasError && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
-            ⚠️ 문제가 발생했습니다. 다시 시도해 주세요.
+            ⚠️ 시작하는데 문제가 발생했습니다
+          </Text>
+          <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+            <Text style={styles.retryButtonText}>다시 시도</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {isLoading && (
+        <View style={styles.statusContainer}>
+          <Text style={styles.statusText}>
+            🚀 데이터를 준비하고 있습니다...
           </Text>
         </View>
       )}
@@ -142,6 +149,31 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#c62828',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  retryButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  statusContainer: {
+    backgroundColor: '#e8f5e8',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#28a745',
+  },
+  statusText: {
+    color: '#155724',
     fontSize: 14,
     textAlign: 'center',
   },
