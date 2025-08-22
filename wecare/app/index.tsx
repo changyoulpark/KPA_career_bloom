@@ -1,40 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function Index() {
   const [hasError, setHasError] = useState(false);
-  const router = useRouter();
-
-  const handleStartPress = async () => {
-    if (hasError) {
-      Alert.alert(
-        '오류 발생',
-        '앱 초기화 중 오류가 발생했습니다. 다시 시도하시겠습니까?',
-        [
-          { text: '취소', style: 'cancel' },
-          { 
-            text: '다시 시도', 
-            onPress: () => {
-              setHasError(false);
-            }
-          }
-        ]
-      );
-      return;
-    }
-
-    try {
-      router.push('/onboarding/goal');
-    } catch (error) {
-      console.error('Navigation error:', error);
-      Alert.alert(
-        '네비게이션 오류',
-        '온보딩 페이지로 이동할 수 없습니다. 다시 시도해 주세요.',
-        [{ text: '확인', style: 'default' }]
-      );
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -43,13 +12,14 @@ export default function Index() {
         취업 준비를 위한 여정을 시작해보세요
       </Text>
       
-      <TouchableOpacity
-        style={[styles.startButton, hasError && styles.errorButton]}
-        onPress={handleStartPress}
-        disabled={hasError}
-      >
-        <Text style={styles.startButtonText}>시작하기</Text>
-      </TouchableOpacity>
+      <Link href="/onboarding/goal" asChild>
+        <TouchableOpacity
+          style={[styles.startButton, hasError && styles.errorButton]}
+          disabled={hasError}
+        >
+          <Text style={styles.startButtonText}>시작하기</Text>
+        </TouchableOpacity>
+      </Link>
 
       {hasError && (
         <View style={styles.errorContainer}>
