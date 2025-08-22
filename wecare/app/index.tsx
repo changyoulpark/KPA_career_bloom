@@ -1,33 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function Index() {
-  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    // Simulate app initialization check
-    const initializeApp = async () => {
-      try {
-        // Add some basic validation checks here
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Check if basic routes exist (this is a simple client-side check)
-        const routesToCheck = ['/onboarding/goal', '/onboarding/qualification', '/onboarding/interest'];
-        
-        // In a real app, you might want to check server connectivity here
-        setIsLoading(false);
-      } catch (error) {
-        console.error('App initialization error:', error);
-        setHasError(true);
-        setIsLoading(false);
-      }
-    };
-
-    initializeApp();
-  }, []);
 
   const handleStartPress = async () => {
     if (hasError) {
@@ -40,9 +17,6 @@ export default function Index() {
             text: '다시 시도', 
             onPress: () => {
               setHasError(false);
-              setIsLoading(true);
-              // Trigger re-initialization
-              setTimeout(() => setIsLoading(false), 1000);
             }
           }
         ]
@@ -61,15 +35,6 @@ export default function Index() {
       );
     }
   };
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>앱 준비 중...</Text>
-        <Text style={styles.subtitle}>잠시만 기다려 주세요</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>

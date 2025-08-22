@@ -10,7 +10,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="home/index"
         options={{
           title: '홈',
           tabBarIcon: ({ color, focused }) => (
@@ -19,7 +19,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="dashboard"
+        name="dashboard/index"
         options={{
           title: '대시보드',
           tabBarIcon: ({ color, focused }) => (
@@ -37,7 +37,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="support"
+        name="support/index"
         options={{
           title: '응원',
           tabBarIcon: ({ color, focused }) => (
@@ -46,7 +46,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="jobs"
+        name="jobs/index"
         options={{
           title: '기업추천',
           tabBarIcon: ({ color, focused }) => (
