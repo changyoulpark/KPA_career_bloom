@@ -12,14 +12,17 @@ export default function Index() {
     if (isLoading) return;
 
     try {
+      console.log('Start button pressed - setting loading state...');
       setIsLoading(true);
       
-      // Show loading state immediately
-      console.log('Start button pressed - loading...');
-
+      // Force a small delay to ensure state update is processed
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log('Loading state set, showing loading for visual feedback...');
       // Add delay for visual feedback  
       await new Promise(resolve => setTimeout(resolve, 800));
 
+      console.log('Loading user data...');
       // Test storage and load user data
       const user = await loadUser();
       console.log('User data loaded successfully:', user);
@@ -31,6 +34,8 @@ export default function Index() {
     } catch (error) {
       console.error('Navigation error:', error);
       setHasError(true);
+    } finally {
+      // Always reset loading state
       setIsLoading(false);
     }
   };
